@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+</head>
+<body>
+
+    <canvas id="canvas"></canvas>
+    <a class="youtube-link" href="https://youtu.be/P89k4jsurjI" target="_blank"></a>
+
+    <div class="quiz-container" id="quiz">
+        <div class="quiz-header">
+            <h2 id="question">"Question Text"</h2>
+            <ul>
+                <li>
+                    <input type="radio" name="answer" id="a" class="answer">
+                    <label for="a" id="a_text">Answer</label>
+                </li>
+
+                <li>
+                    <input type="radio" name="answer" id="b" class="answer">
+                    <label for="b" id="b_text">Answert</label>
+                </li>
+
+                <li>
+                    <input type="radio" name="answer" id="c" class="answer">
+                    <label for="c" id="c_text">Answer</label>
+                </li>
+
+            </ul>
+        </div>
+
+        <button id="submit">Next</button>
+    </div>
+
+<style>
+
+*{
+    box-sizing: border-box;
+}
+
+
+#canvas {
+	position: fixed;
+	z-index: -1;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.youtube-link {
+	position: fixed;
+	left: 20px;
+	bottom: 20px;
+	color: #000;
+	text-decoration: none;
+	font-size: 12px;
+}
+
+body{
+    background-image: url(images/quizfruit.jpg);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    font-family: 'poppins', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+    margin: 0;
+}
+
+.quiz-container{
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 2px rgba(100, 100, 100, 0.1);
+    width: 450px;
+    height: max-content;
+    overflow: hidden;
+}
+
+.quiz-header{
+    padding: 4rem;
+}
+
+h2{
+    padding: 1rem;
+    text-align: center;
+    margin: 0;
+    font-size: 24px;
+}
+
+ul{
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li{
+    font-size: 22px;
+    margin: 2rem 0;
+}
+
+ul li label{
+    cursor: pointer;
+}
+
+button{
+    background: rgb(115, 228, 115);
+    border: 2px solid  limegreen;
+    transition: 0.5s;
+    color:black;
+    display: block;
+    width: 100%;
+    cursor: pointer;
+    font-size: 22px;
+    padding: 1.3rem;
+}
+
+button:hover{
+    background: limegreen;
+    color: black;
+    transform: scale(1.1);
+}
+
+button:focus{
+    outline: none;
+    background-color: rgb(118, 249, 118);
+}
+
+</style>
+
+<script>
+const quizData = [
+{
+    question: "What's your primary goal?",
+    a: "Lose weight",
+    b: "Maintain weight",
+    c: "Gain weight",
+    correct: "a",
+},
+
+{
+    question: "What is your food preference?",
+    a: "Vegetarian",
+    b: "Vegan",
+    c: "Pescetarian",
+    correct: "a",
+},
+
+{
+    question: "Do you have any specific dietary requirement?",
+    a: "Keto – Ultra low carb",
+    b: "Low carb – Slightly less carbs & more fat",
+    c: "High protein – Extra protein boost for muscle building",
+    correct: "a",
+},
+
+{
+    question: "Do you prefer to follow a Meal Plan or stay more flexible?",
+    a: "Follow our Meal Plan",
+    b: "A few tips would be nice",
+    c: "No Meal Plan",
+    correct: "a",
+},
+
+{
+    question: "What do you struggle with?",
+    a: "Junk food",
+    b: "Sugary foods",
+    c: "Emotional eating (e.g. stress, depression)",
+    correct: "a",
+},
+
+{
+    question: "Do you do your own cooking?",
+    a: "Yes, and I enjoy it",
+    b: "No",
+    c: "Sometimes",
+    correct: "a",
+},
+
+{
+    question: "What are your main obstacles to eating more healthily?",
+    a: "I don't know enough about nutrition",
+    b: "Lack of time",
+    c: "Lack of willpower",
+    correct: "a",
+},
+
+{
+    question: "Do you do your own grocery shopping?",
+    a: "No",
+    b: "Sometimes",
+    c: "Yes, and I enjoy it",
+    correct: "a",
+},
+];
+
+const quiz= document.getElementById('quiz')
+const answerEls = document.querySelectorAll('.answer')
+const questionEl = document.getElementById('question')
+const a_text = document.getElementById('a_text')
+const b_text = document.getElementById('b_text')
+const c_text = document.getElementById('c_text')
+const submitBtn = document.getElementById('submit')
+let currentQuiz = 0
+let score = 0
+loadQuiz()
+function loadQuiz() {
+    deselectAnswers()
+    const currentQuizData = quizData[currentQuiz]
+    questionEl.innerText = currentQuizData.question
+    a_text.innerText = currentQuizData.a
+    b_text.innerText = currentQuizData.b
+    c_text.innerText = currentQuizData.c
+}
+function deselectAnswers() {
+    answerEls.forEach(answerEl => answerEl.checked = false)
+}
+function getSelected() {
+    let answer
+    answerEls.forEach(answerEl => {
+        if(answerEl.checked) {
+            answer = answerEl.id
+        }
+    })
+    return answer
+}
+submitBtn.addEventListener('click', () => {
+    const answer = getSelected()
+    if(answer) {
+       if(answer === quizData[currentQuiz].correct) {
+           score++
+       }
+       currentQuiz++
+       if(currentQuiz < quizData.length) {
+           loadQuiz()
+       } else {
+           quiz.innerHTML = `
+           <h2>The site will be customized according to your needs !</h2>
+           <button onclick="location.reload()">Reload</button>
+           `
+       }
+    }
+})
+</script>
+<script>
+const canvas = document.querySelector("#canvas");
+const ctx = canvas.getContext("2d");
+
+let w, h, balls = [];
+let mouse = {
+	x: undefined,
+	y: undefined
+}
+let rgb = [
+	[26, 188, 156],
+	[46, 204, 113],
+	[52, 152, 219],
+	[155, 89, 182],
+	[241, 196, 15],
+	[230, 126, 34],
+	[231, 76, 60]
+]
+
+function init() {
+	resizeReset();
+	animationLoop();
+}
+
+function resizeReset() {
+	w = canvas.width = window.innerWidth;
+	h = canvas.height = window.innerHeight;
+}
+
+function animationLoop() {
+	ctx.clearRect(0, 0, w, h);
+	if (mouse.x !== undefined && mouse.y !== undefined) {
+		balls.push(new Ball());
+	}	
+	if (balls.length > 200) {
+		balls = balls.slice(1);
+	}
+	drawBalls();
+	requestAnimationFrame(animationLoop);
+}
+
+function drawBalls() {
+	for (let i = 0; i < balls.length; i++) {
+		balls[i].update();
+		balls[i].draw();
+	}
+}
+
+function mousemove(e) {
+	mouse.x = e.x;
+	mouse.y = e.y;
+}
+
+function mouseout() {
+	mouse.x = undefined;
+	mouse.y = undefined;
+}
+
+function getRandomInt(min, max) {
+	return Math.round(Math.random() * (max - min)) + min;
+}
+
+class Ball {
+	constructor() {
+		this.x = mouse.x + getRandomInt(-20, 20);
+		this.y = mouse.y + getRandomInt(-20, 20);
+		this.size = getRandomInt(10, 20);
+		this.rgb = rgb[getRandomInt(0, rgb.length - 1)];
+		this.style = "rgba("+this.rgb[0]+","+this.rgb[1]+","+this.rgb[2]+",.5)";
+	}
+	draw() {
+		ctx.fillStyle = this.style;
+		ctx.beginPath();
+		ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+		ctx.closePath();
+		ctx.fill();
+	}
+	update() {
+		if (this.size > 0) {
+			let s = this.size - 0.3;
+			this.size = (s <= 0) ? 0 : s;
+		}
+	}
+}
+
+window.addEventListener("DOMContentLoaded", init);
+window.addEventListener("resize", resizeReset);
+window.addEventListener("mousemove", mousemove);
+window.addEventListener("mouseout", mouseout);
+</script>
+
+
+</body>
+</html>
